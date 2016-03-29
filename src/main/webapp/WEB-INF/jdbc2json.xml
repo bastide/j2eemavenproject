@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE JDBC2JSON SYSTEM "jdbc2json.dtd" 
+[
+	<!ENTITY host     "univ-jfc.c16jogewzbrr.us-east-1.rds.amazonaws.com">
+	<!ENTITY database "comptoirs">
+	<!ENTITY user     "isis">
+	<!ENTITY password "castres81">
+]
+>
+<JDBC2JSON>       
+	<DRIVERSTRING>jdbc:mysql://&host;:3306/&database;?user=&user;&amp;password=&password;&amp;zeroDateTimeBehavior=convertToNull&amp;useServerPrepStmts=true</DRIVERSTRING>
+
+        <QUERY name="TousLesClients">
+		SELECT * FROM Client
+	</QUERY>
+
+        <QUERY name="ClientParCode">
+		SELECT * FROM Client WHERE code = :code
+	</QUERY>
+
+	<QUERY name="SalesByCustomer">
+		SELECT Societe, SUM( Quantite * Prix_unitaire ) AS SALES
+		FROM Client
+		INNER JOIN Commande ON (Client.Code = Commande.client)
+                INNER JOIN Ligne    ON (Commande.Numero = Ligne.Commande)
+		INNER JOIN Produit  ON (Ligne.Produit = Produit.Reference)
+		GROUP BY Societe		
+	</QUERY>	
+                        
+</JDBC2JSON>
